@@ -11,14 +11,14 @@ var path    = require("path");
 var ffmpeg = require('ffmpeg');
 
 	try {
-		var process = new ffmpeg('media/uwf.mp4');
+		var process = new ffmpeg('videos/src/sample.mp4');
 		process.then(function (video) {
 			console.log('The video is ready to be processed');
 				video
-					.setVideoSize('720x?', true, true, 'black')
+					.setVideoSize('480x?', true, true, 'black')
 					.setVideoFormat('mp4')
 					.setWatermark('media/logosmall.png')
-					.save('outputFiles/outsmall.mp4', function (error, file) {
+					.save('videos/dest/sample_480.mp4', function (error, file) {
 						console.log('Video saving...')
 					if (!error){
 						console.log('Saved! New video file: ' + file);
@@ -35,6 +35,69 @@ var ffmpeg = require('ffmpeg');
 		console.log(e.code);
 		console.log(e.msg);
 	}
+
+
+
+
+	try {
+		var process = new ffmpeg('videos/src/sample.mp4');
+		process.then(function (video) {
+			console.log('The video is ready to be processed');
+				video
+					.setVideoSize('720x?', true, true, 'black')
+					.setVideoFormat('mp4')
+					.setWatermark('media/logosmall.png')
+					.save('videos/dest/sample_720.mp4', function (error, file) {
+						console.log('Video saving...')
+					if (!error){
+						console.log('Saved! New video file: ' + file);
+					}
+					else{
+						console.log('Could not save video' + error)
+					}
+					});
+
+		}, function (err) {
+			console.log('Error: ' + err);
+		});
+	} catch (e) {
+		console.log(e.code);
+		console.log(e.msg);
+	}
+
+
+
+
+
+	try {
+		var process = new ffmpeg('videos/src/sample.mp4');
+		process.then(function (video) {
+			console.log('The video is ready to be processed');
+				video
+					.setVideoSize('1080x?', true, true, 'black')
+					.setVideoFormat('mp4')
+					.setWatermark('media/logosmall.png')
+					.save('videos/dest/sample_1080.mp4', function (error, file) {
+						console.log('Video saving...')
+					if (!error){
+						console.log('Saved! New video file: ' + file);
+					}
+					else{
+						console.log('Could not save video' + error)
+					}
+					});
+
+		}, function (err) {
+			console.log('Error: ' + err);
+		});
+	} catch (e) {
+		console.log(e.code);
+		console.log(e.msg);
+	}
+	//run shell script and make manifest
+
+
+
 // 	}
 // // path to my video file
 // var infs = fs.createReadStream('./uwf.mp4');
