@@ -1,0 +1,48 @@
+language: cpp
+
+os:
+  - linux
+  - osx
+
+env:
+  - BUILD_TYPE=Debug
+  - BUILD_TYPE=Release
+
+before_install:
+  - test -n $CC  && unset CC
+  - test -n $CXX && unset CXX
+
+install:
+  - git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git ../depot_tools/
+  - export PATH="$PATH:$PWD/../depot_tools"
+
+before_script:
+  - mkdir src
+  - shopt -s extglob dotglob
+  - mv !(src) src
+  - gclient config https://github.com/google/shaka-packager.git --name=src --unmanaged
+  - gclient sync
+  - cd src
+  - ninja -C out/${BUILD_TYPE} -k 100
+
+script:
+  - ( find out/${BUILD_TYPE} -name "*_*test" | while read i ; do $i || exit ; done )
+  - out/${BUILD_TYPE}/packager_test.py -v
+
+before_deploy:
+  - mv out/${BUILD_TYPE}/packager out/${BUILD_TYPE}/packager-${TRAVIS_OS_NAME}
+
+deploy:
+  provider: releases
+  api_key:
+    secure: PbhquzRnY1BkGkM/6LmVSZjhUd8jWnj77QjxAKA8REnFhbAuzqwDYuytRmUsBFMtgatUEgTuh/1duZaIl0yXGvRZdNeGk7BgtguUy6vraWObjjNUSlQ6Njm4y/hMgaUIOhA9I2b8gokWU1PA0sDJOF/FoZaAxFpKXcW4d8Z2C0s=
+  file: out/${BUILD_TYPE}/packager-${TRAVIS_OS_NAME}
+  skip_cleanup: true
+  on:
+    tags: true
+    condition: ${BUILD_TYPE} = Release
+
+branches:
+  only:
+    - master
+    - "/^v\\d+\\./"
